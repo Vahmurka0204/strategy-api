@@ -9,6 +9,7 @@
     {
         public int Id { get; set; }
         public int ArenaId { get; set; }
+        public Arena Arena { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
         public Type Type { get; set; }

@@ -12,6 +12,7 @@
     {
         public int Id { get; set; }
         public int PlayerId { get; set; }
+        public Player Player { get; set; }
         public int Round { get; set; }
         public int Index { get; set; }
         public Value Value { get; set; }
