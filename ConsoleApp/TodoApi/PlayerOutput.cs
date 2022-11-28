@@ -1,9 +1,9 @@
-﻿namespace ConsoleApp
+﻿namespace TodoApi
 {
-    public class Player
+    public class PlayerOutput
     {
         public int Id { get; set; }
-        public List<Action> Actions { get; set; } = new List<Action>();
+        public string Name { get; set; }
         public int Health { get; set; }
         public int X { get; set; }
         public int Y { get; set; }

@@ -13,6 +13,6 @@
         public Arena Arena { get; set; }
         public Status Status { get; set; }
         public int Round { get; set; }
-        public List<Player> Players { get; set; }
+        public List<Player> Players { get; set; } = new List<Player>();
     }
 }

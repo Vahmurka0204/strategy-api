@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ConsoleApp;
+using Type = ConsoleApp.Type;
 
 namespace TodoApi.Controllers
 {
@@ -22,28 +23,47 @@ namespace TodoApi.Controllers
         [HttpGet]
         public Status Get()
         {
-            var wallsData = _context.Inventory.ToList();
+            var game = _context.Game.First();
+
+            var inventoriesData = game.Arena.Inventories.ToList();
+            var wallsData = inventoriesData.FindAll(e => e.Type == Type.Wall);
+            var spawnData = inventoriesData.FindAll(e => e.Type == Type.Spawn);
+
 
             object[] walls = new object[wallsData.Count];
             int i = 0;
+
             foreach (var wall in wallsData)
             {
                 walls[i++] = new object[] {wall.X, wall.Y};
             }
 
             return new Status() {
-                Size=10,
-                Capacity=2,
+                Size=game.Arena.Width,
+                Capacity=spawnData.Count,
                 Players = new object[0],
                 Walls = walls
+
             };
         }
 
         [Route("join")]
         [HttpPost]
-        public void Join()
+        public PlayerOutput Join(Credentials credentials)
         {
-           
+            var game = _context.Game.First();
+            var user = _context.User.First(e=>e.Id==credentials.id);
+            var inventoriesData = game.Arena.Inventories.ToList();
+            var spawnData = inventoriesData.FindAll(e => e.Type == Type.Spawn);
+            var players = game.Players.ToList();
+            var spawnForPlayer = spawnData[players.Count];
+            var player = new Player() { X = spawnForPlayer.X, Y = spawnForPlayer.Y, Health = 3 };
+            user.Players.Add(player);
+            game.Players.Add(player);
+            _context.Game.Update(game);
+            _context.User.Update(user);
+            _context.SaveChanges();
+            return new PlayerOutput() { Health = player.Health, Name = user.Name, X= player.X, Y=player.Y, Id = player.Id };
         }
 
         [Route("leave")]

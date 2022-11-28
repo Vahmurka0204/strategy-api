@@ -13,11 +13,18 @@ namespace ConsoleApp
 
         public ApplicationContext()
         {
-            //Database.EnsureDeleted();
+            Database.EnsureCreated();
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=strategydb;Username=postgres;Password=123456");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Game>().Navigation(e => e.Arena).AutoInclude();
+            modelBuilder.Entity<Game>().Navigation(e => e.Players).AutoInclude();
+            modelBuilder.Entity<Arena>().Navigation(e => e.Inventories).AutoInclude();
         }
     }
 }
