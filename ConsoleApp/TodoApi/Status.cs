@@ -1,3 +1,5 @@
+using ConsoleApp;
+
 namespace TodoApi
 {
     public class Status
@@ -6,7 +8,7 @@ namespace TodoApi
 
         public int Capacity { get; set; }
 
-        public object[] Players { get; set; }
+        public List<Player> Players { get; set; }
 
         public object[] Walls { get; set; }
     }

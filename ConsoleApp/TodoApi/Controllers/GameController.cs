@@ -41,7 +41,7 @@ namespace TodoApi.Controllers
             return new Status() {
                 Size=game.Arena.Width,
                 Capacity=spawnData.Count,
-                Players = new object[0],
+                Players = game.Players,
                 Walls = walls
 
             };
@@ -52,6 +52,10 @@ namespace TodoApi.Controllers
         public PlayerOutput Join(Credentials credentials)
         {
             var game = _context.Game.First();
+            if (credentials.id == null)
+            {
+                credentials.id = game.Players.Count + 1;
+            }
             var user = _context.User.First(e=>e.Id==credentials.id);
             var inventoriesData = game.Arena.Inventories.ToList();
             var spawnData = inventoriesData.FindAll(e => e.Type == Type.Spawn);
@@ -68,9 +72,14 @@ namespace TodoApi.Controllers
 
         [Route("leave")]
         [HttpPost]
-        public void Leave()
+        public Credentials Leave(Credentials credentials)
         {
-
+            var game = _context.Game.First();
+            var player = game.Players.Find(e => e.Id == credentials.id);
+            game.Players.Remove(player);
+            _context.Game.Update(game);
+            _context.SaveChanges();
+            return new Credentials();
         }
 
         [Route("submit")]
